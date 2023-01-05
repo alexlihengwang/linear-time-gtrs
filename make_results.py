@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-date = "_0718"
-path_outputs = "outputs/"   # script ouputs
+# date = "20230105/"
+date = "20220718/"
+
+path_outputs = "outputs_" + date   # script ouputs
 path_results = "results/"   # dir to save figures and tables
 if not os.path.exists(path_results):
     os.mkdir(path_results)
@@ -17,19 +19,18 @@ allData = {}
 
 for n in n_list:
     if n == '1000':
-        path = path_outputs + "results_server_1e3_new" + date
+        path = path_outputs + "results_server_1e3"
         algs = ['JL19', 'BTH14', 'AN19', 'WK20', 'WLK21']
         # algs = ['WLK21(ErrorCR)', 'WLK21']
         numTests = 100
 
     elif n == '10000':
-        path = path_outputs + "results_server_1e4_new" + date
+        path = path_outputs + "results_server_1e4"
         algs = ['JL19', 'AN19', 'WK20', 'WLK21']
         # algs = ['WLK21(ErrorCR)', 'WLK21']
         numTests = 100
-
     else:
-        path = path_outputs + "results_server_1e5_new" + date
+        path = path_outputs + "results_server_1e5"
         algs = ['JL19', 'WK20', 'WLK21']
         # algs = ['WLK21(ErrorCR)', 'WLK21']
         numTests = 5
@@ -78,7 +79,7 @@ for n in n_list:
         numTests = 100
         algs = ['JL19',  'AN19', 'WK20', 'WLK21']
         colors = ['#4DAF4A', '#E41A1C', '#377EB8', '#984EA3']
-        xlims = [600, 400,200, 60, 40, 20]
+        xlims = [600, 400, 200, 60, 40, 20]
         # algs = ['WLK21(ErrorCR)', 'WLK21']
         # colors = ['#FF7F00', '#984EA3']
         # xlims = [300, 150, 40, 40, 20, 6]
@@ -154,39 +155,44 @@ for n in n_list:
 # make tables
 
 Tables = []
+mu2str = {'0.01': '1e-2', '0.0001': '1e-4', '1e-06': '1e-6'}
 
-for n in ['1000', '10000', '100000']:
+for n in n_list:
     if n == '1000':
-        path = path_outputs + "results_server_1e3_new" + date
+        path = path_outputs + "results_server_1e3/"
         densities = ['0.01', '0.1']
-        table = [
-            [None, 'WLK21'],
-            [None, 'WK20'],
-            [mu, 'JL19'],
-            [None, 'AN19'],
-            [None, 'BTH14']]
     elif n == '10000':
-        path = path_outputs + "results_server_1e4_new" + date
+        path = path_outputs + "results_server_1e4/"
         densities = ['0.001', '0.01']
-        table = [
-            [None, 'WLK21'],
-            [None, 'WK20'],
-            [mu, 'JL19'],
-            [None, 'AN19']]
     elif n == '100000':
-        path = path_outputs + "results_server_1e5_new" + date
+        path = path_outputs + "results_server_1e5/"
         densities = ['0.0001', '0.001']
-        table = [
-            [None, 'WLK21'],
-            [mu, 'WK20'],
-            [None, 'JL19']]
 
     data = {}
 
     for mu in ['0.01', '0.0001', '1e-06']:
+        if n == '1000':
+            table = [
+                [None, 'WLK21'],
+                [None, 'WK20'],
+                [mu2str[mu], 'JL19'],
+                [None, 'AN19'],
+                [None, 'BTH14']]
+        elif n == '10000':
+            table = [
+                [None, 'WLK21'],
+                [None, 'WK20'],
+                [mu2str[mu], 'JL19'],
+                [None, 'AN19']]
+        elif n == '100000':
+            table = [
+                [None, 'WLK21'],
+                [mu2str[mu], 'WK20'],
+                [None, 'JL19']]
+
         for density in densities:
-            path1 = '/avg_density=' + density + '_mu=' + mu + '_n=' + n + '.csv'
-            path2 = '/avg_eig_density=' + density + '_mu=' + mu + '_n=' + n + '.csv'
+            path1 = 'avg_density=' + density + '_mu=' + mu + '_n=' + n + '.csv'
+            path2 = 'avg_eig_density=' + density + '_mu=' + mu + '_n=' + n + '.csv'
             data_avg = pd.read_csv(path + path1).values
             data_times = pd.read_csv(path + path2).values
 
@@ -210,7 +216,6 @@ for n in ['1000', '10000', '100000']:
     
     Tables.append(data)
 
-
 files = ['table3.tex' , 'table4.tex', 'table5.tex']
 # files = ['table3_0718.tex' , 'table4_0718.tex', 'table5_0718.tex']
 keys = [1e-2, 1e-4, 1e-6]
@@ -232,6 +237,7 @@ for data, file in zip(Tables, files):
     print("& & & & & \\multicolumn{2}{c}{Time} & & & & \\multicolumn{2}{c}{Time} \\\\", file=f)
     print("\\cmidrule(lr){6-7} \\cmidrule(lr){11-12}", file=f)
     print("$\\bar\\mu^*$   & Alg.        & \\texttt{Error} & \\texttt{ErrorCR} & Time      & Ref.\\ & Solve & \\texttt{Error} & \\texttt{ErrorCR} & Time     & Ref.\\  & Solve \\\\", file=f)
+
     for key in keys:
         print ('\\midrule', file=f)
         for row in data[key]:
