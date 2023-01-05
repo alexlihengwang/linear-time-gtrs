@@ -46,8 +46,7 @@ function [x, y, out] = grad_descent_WK(A0, b0, c0, A1, b1, c1, A_0, b_0, c_0, A_
             out.conv(1, k) = toc;
             out.conv(2, k) = max(quad_eval(A0, b0, c0, x), quad_eval(A1, b1, c1, x));
             x_r = rounding(x, A_0, b_0, c_0, A_1, b_1, c_1, opts.v_minus, opts.v_plus);
-%             out.conv(3, k) = quad_eval(A_0, b_0, c_0, x_r);
-            out.conv(3, k) = quad_eval(A_0, b_0, c_0, x);
+            out.conv(3, k) = quad_eval(A_0, b_0, c_0, x_r);
         end    
 
         if termination_criteria(A0, b0, c0, A1, b1, c1, L, x_new, y_old, x_old, epsilon)
@@ -59,8 +58,7 @@ function [x, y, out] = grad_descent_WK(A0, b0, c0, A1, b1, c1, A_0, b_0, c_0, A_
             out.conv(1, k+1) = toc;
             out.conv(2, k+1) = max(quad_eval(A0, b0, c0, x), quad_eval(A1, b1, c1, x));
             x_r = rounding(x, A_0, b_0, c_0, A_1, b_1, c_1, opts.v_minus, opts.v_plus);
-%             out.conv(3, k+1) = quad_eval(A_0, b_0, c_0, x_r);
-            out.conv(3, k+1) = quad_eval(A_0, b_0, c_0, x);
+            out.conv(3, k+1) = quad_eval(A_0, b_0, c_0, x_r);
             out.conv = out.conv(:, 1:k+1);
             return;
         end
