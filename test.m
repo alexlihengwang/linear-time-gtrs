@@ -1,11 +1,6 @@
 % Demo script to run algorithms(WLK21, WK20, JL19, AN19, BTH14) for the GTRS 
 % Requirment: MOSEK installed and added to PATH
 
-clear
-dir_name = 'results';
-mkdir(dir_name);
-addpath /Applications/mosek/9.3/toolbox/r2015a
-
 
 % parameters
 n = 1e3;
