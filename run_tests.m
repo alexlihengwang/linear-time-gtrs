@@ -2,13 +2,17 @@
 % run this script to generate plots and tables
 % Requirment: MOSEK installed and added to PATH
 
+
 clear;
+
+% dir to save outputs
+dir = 'outputs_20230105';
+mkdir(dir);
 
 % dimension 
 n = 1e3;
-dir_name = 'results';
+dir_name = strcat(dir, '/results_server_1e', string(log10(n)));
 mkdir(dir_name);
-
 
 % density and regularity
 densities = [100 / n, 10 / n];
