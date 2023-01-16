@@ -6,7 +6,7 @@
 clear;
 
 % dir to save outputs
-dir = 'outputs_20230105';
+dir = 'outputs_20230109';
 mkdir(dir);
 
 % dimension 

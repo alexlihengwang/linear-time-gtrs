@@ -6,13 +6,16 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-# date = "20230105/"
-date = "20220718/"
+date = "20230109/"
 
 path_outputs = "outputs_" + date   # script ouputs
-path_results = "results/"   # dir to save figures and tables
+path_results = "results_" + date   # dir to save figures and tables
 if not os.path.exists(path_results):
     os.mkdir(path_results)
+
+
+#########################
+# make figures 1--3
 
 n_list = ['1000', '10000', '100000']
 allData = {}
@@ -57,10 +60,6 @@ for n in n_list:
 
     allData[n] = data
 
-#########################
-
-# make figures
-
 plt.rcParams.update({'font.size': 14})
 plt.rc('text', usetex=True)
 
@@ -70,9 +69,6 @@ for n in n_list:
         algs = ['JL19', 'BTH14', 'AN19', 'WK20', 'WLK21']
         colors = ['#4DAF4A', '#FF7F00', '#E41A1C', '#377EB8', '#984EA3']
         xlims = [30, 20, 10, 3, 2, 1]
-        # algs = ['WLK21(ErrorCR)', 'WLK21']
-        # colors = ['#FF7F00', '#984EA3']
-        # xlims = [8, 3.5, 1, 1.5, 0.8, 0.3]
         lw, a = 1, 0.25
         filename = '1e3fig.pdf'
     elif n == '10000':
@@ -80,9 +76,6 @@ for n in n_list:
         algs = ['JL19',  'AN19', 'WK20', 'WLK21']
         colors = ['#4DAF4A', '#E41A1C', '#377EB8', '#984EA3']
         xlims = [600, 400, 200, 60, 40, 20]
-        # algs = ['WLK21(ErrorCR)', 'WLK21']
-        # colors = ['#FF7F00', '#984EA3']
-        # xlims = [300, 150, 40, 40, 20, 6]
         lw, a = 1, 0.25
         filename = '1e4fig.pdf'
     elif n == '100000':
@@ -90,9 +83,6 @@ for n in n_list:
         algs = ['JL19', 'WK20', 'WLK21']
         colors = ['#4DAF4A', '#377EB8', '#984EA3']
         xlims = [9000, 6000, 3000, 900, 600, 300]
-        # algs = ['WLK21(ErrorCR)', 'WLK21']
-        # colors = ['#FF7F00', '#984EA3']
-        # xlims = [8000,4000,1000,500,300,60]
         lw, a = 1, 1
         filename = '1e5fig.pdf'
 
@@ -142,10 +132,125 @@ for n in n_list:
 
     fig.tight_layout()
     plt.subplots_adjust(left=0.08, bottom=0.15, right=1-0.04, top=1-0.075, wspace=0.35, hspace=0.45)
-    # fig.tight_layout()
+    fig.legend(handles=patches, loc="lower center", ncol=numAlgs)
+    fig.set_size_inches(14,7)
+    plt.savefig(path_results + filename)
+
+
+#########################
+# make figures 4--6
+
+n_list = ['1000', '10000', '100000']
+allData = {}
+
+for n in n_list:
+    if n == '1000':
+        path = path_outputs + "results_server_1e3"
+        algs = ['WLK21(ErrorCR)', 'WLK21']
+        numTests = 100
+
+    elif n == '10000':
+        path = path_outputs + "results_server_1e4"
+        algs = ['WLK21(ErrorCR)', 'WLK21']
+        numTests = 100
+    else:
+        path = path_outputs + "results_server_1e5"
+        algs = ['WLK21(ErrorCR)', 'WLK21']
+        numTests = 5
+
+    data = []
+    
+    for N in [100, 10]:
+        for mu in ['1e-06', '1e-04', '1e-02']:
+            graphData = []
+            for i in range(len(algs)):
+                graphData.append([])
+                reader = csv.reader(open(path + "/iterates_" + algs[i] + "_N=" + str(N) + "_mu=" + mu + "_n=" + n + ".csv"), delimiter=",")
+                for _ in range(numTests):
+                    x = next(reader)
+                    y = next(reader)
+                    graphData[i].append([float(x_) for x_ in x])
+                    graphData[i].append([float(y_) for y_ in y])
+
+            data.append({
+                'mu': mu,
+                'N': N,
+                'graph': graphData
+                })
+
+    allData[n] = data
+
+plt.rcParams.update({'font.size': 14})
+plt.rc('text', usetex=True)
+
+for n in n_list:
+    if n == '1000':
+        numTests = 100
+        algs = ['WLK21(ErrorCR)', 'WLK21']
+        colors = ['#FF7F00', '#984EA3']
+        xlims = [8, 3.5, 1, 1.5, 0.8, 0.3]
+        lw, a = 1, 0.25
+        filename = '1e3fig_ErrorCR.pdf'
+    elif n == '10000':
+        numTests = 100
+        algs = ['WLK21(ErrorCR)', 'WLK21']
+        colors = ['#FF7F00', '#984EA3']
+        xlims = [300, 150, 40, 40, 20, 6]
+        lw, a = 1, 0.25
+        filename = '1e4fig_ErrorCR.pdf'
+    elif n == '100000':
+        numTests = 5
+        algs = ['WLK21(ErrorCR)', 'WLK21']
+        colors = ['#FF7F00', '#984EA3']
+        xlims = [8000,4000,1000,500,300,60]
+        lw, a = 1, 1
+        filename = '1e5fig_ErrorCR.pdf'
+
+    numAlgs = len(algs)
+    fig, axs = plt.subplots(2, 3)
+
+    data = allData[n]
+
+    for graph in range(6):
+        graphData = data[graph]['graph']
+        title = r'$\bar\mu^* = ' 
+        if data[graph]['mu'] == '1e-02':
+            title += '10^{-2}'
+        elif data[graph]['mu'] == '1e-04':
+            title += '10^{-4}'
+        else:
+            title += '10^{-6}'
+        if data[graph]['N'] == 10:
+            title += r',\,\bar N = 10^{' + str(len(n)) + r'}$'
+        else:
+            title += r',\,\bar N = 10^{' + str(len(n) + 1) + r'}$'
+
+        for algNum, algData in enumerate(graphData):
+            for i in range(numTests):
+                x = np.array(algData[2 * i])
+                y = np.array(algData[2 * i + 1])
+                x = np.extract(y > 0, x)
+                y = np.extract(y > 0, y)
+                # print(all(y > 0))
+                axs[1 - graph // 3, 2 - graph % 3].plot(x, y, color=colors[algNum], linewidth=lw, alpha=a)
+
+        axs[1 - graph // 3, 2 - graph % 3].set_yscale('log')
+        axs[1 - graph // 3, 2 - graph % 3].set_title(title)
+        axs[1 - graph // 3, 2 - graph % 3].grid()
+        axs[1 - graph // 3, 2 - graph % 3].set_xlim([0,xlims[graph]])
+        axs[1 - graph // 3, 2 - graph % 3].set_ylim([1e-14, 1e0])
+        axs[1 - graph // 3, 2 - graph % 3].set_xlabel('time (s)')
+        axs[1 - graph // 3, 2 - graph % 3].set_ylabel('error')
+
+    patches = []
+    for algNum, algName in enumerate(algs):
+        patches.append(mpatches.Patch(color=colors[algNum], label=algName))
+    patches.reverse()
+
+    fig.tight_layout()
+    plt.subplots_adjust(left=0.08, bottom=0.15, right=1-0.04, top=1-0.075, wspace=0.35, hspace=0.45)
     fig.legend(handles=patches, loc="lower center", ncol=numAlgs)
 
-    # plt.show()
     fig.set_size_inches(14,7)
     plt.savefig(path_results + filename)
 
@@ -217,7 +322,6 @@ for n in n_list:
     Tables.append(data)
 
 files = ['table3.tex' , 'table4.tex', 'table5.tex']
-# files = ['table3_0718.tex' , 'table4_0718.tex', 'table5_0718.tex']
 keys = [1e-2, 1e-4, 1e-6]
 
 for data, file in zip(Tables, files):
