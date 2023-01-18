@@ -12,6 +12,7 @@ mkdir(dir);
 % dimension 
 n = 1e3;
 dir_name = strcat(dir, '/results_server_1e', string(log10(n)));
+mosek_log_path = strcat(dir_name, '/mosek_log.txt');
 mkdir(dir_name);
 
 % density and regularity
@@ -94,11 +95,11 @@ for i = 1 : length(densities)
             % BTH14
             if run_BTH14
                 fprintf('Running BTH14\n');
-                [~, ~, out_BTH14] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat);
+                [~, ~, out_BTH14] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat, mosek_log_path);
                 fprintf('BTH14 Error: %.3E, Time: %.3E\n\n', abs(out_BTH14.fval-opt), out_BTH14.time);
                 
                 % retrieve convergence data from mosek log
-                fileID = fopen('results/mosek_log.txt');
+                fileID = fopen(mosek_log_path);
                 while true
                     c = textscan(fileID, '%s', 1);
                     if strcmp(c{1}{1}, 'TIME')

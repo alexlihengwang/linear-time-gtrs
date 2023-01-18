@@ -1,7 +1,7 @@
 % gtrs_BTH14.m
 % Implementation of the algorithm in the paper "Hidden conic quadratic representation of some nonconvex quadratic optimization problems" by A. Ben-Tal and D. den Hertog.
 % Requirement: MOSEK installed
-function [x_opt, fval, out] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat)
+function [x_opt, fval, out] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat, mosek_log_path)
     tic;
     clear prob;
     out = struct();
@@ -61,7 +61,7 @@ function [x_opt, fval, out] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat
 
     tic;
     % solve the SOCP reformulation using Mosek
-    [~, res] = mosekopt('minimize echo(0) log(results/mosek_log.txt)', prob, param);
+    [~, res] = mosekopt(strcat('minimize echo(0) log(', mosek_log_path, ')'), prob, param);
     % solution 
     fval = -res.sol.itr.pobjval + c_0;
     z = res.sol.itr.xx;
