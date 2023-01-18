@@ -1,6 +1,8 @@
 % Demo script to run algorithms(WLK21, WK20, JL19, AN19, BTH14) for the GTRS 
 % Requirment: MOSEK installed and added to PATH
+clear
 
+addpath /usr/local/mosek/9.3/toolbox/r2015a
 
 % parameters
 n = 1e3;
@@ -62,7 +64,7 @@ end
 % BTH14
 if run_BTH14
 fprintf('Running BTH14\n');
-[~, ~, out_BTH14] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat, './mosek_log.txt');
+[~, ~, out_BTH14] = gtrs_BTH14(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat, 'mosek_log.txt');
 time_BTH14 = out_BTH14.time;
 err_BTH14 = abs(out_BTH14.fval - opt);
 fprintf('BTH14 Error: %.3E, Time: %.3E\n\n', err_BTH14, time_BTH14);

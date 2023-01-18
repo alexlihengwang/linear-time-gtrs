@@ -5,6 +5,8 @@
 
 clear;
 
+addpath /usr/local/mosek/9.3/toolbox/r2015a
+
 % dir to save outputs
 dir = 'outputs_20230118';
 mkdir(dir);
