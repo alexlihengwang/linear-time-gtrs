@@ -34,8 +34,11 @@ function [x, fval, out] = gtrs_WK20(A_0, b_0, c_0, A_1, b_1, c_1, gamma_hat, opt
     fprintf('\tComputing gamma_minus and gamma_plus\n');
     [gamma_minus, v_minus] = eigifp(-A_1, A_hat, opts_gamma);
     gamma_minus = gamma_hat + 1 / (gamma_minus - opts_gamma.tol);
+    v_minus = v_minus / norm(v_minus);
+
     [gamma_plus, v_plus] = eigifp(A_1, A_hat, opts_gamma);
     gamma_plus = gamma_hat - 1 / (gamma_plus - opts_gamma.tol);
+    v_plus = v_plus / norm(v_plus);
     out.time_eig = toc;
     fprintf('\tEigenvalue time, %f\n', out.time_eig);
 

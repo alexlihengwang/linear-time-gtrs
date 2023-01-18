@@ -6,7 +6,7 @@
 clear;
 
 % dir to save outputs
-dir = 'outputs_20230109';
+dir = 'outputs_20230118';
 mkdir(dir);
 
 % dimension 
@@ -26,7 +26,7 @@ else
 end
 
 % GTRS solvers to run
-run_AN19= (n <= 1e4);
+run_AN19 = (n <= 1e4);
 run_BTH14 = (n <= 1e3);
 run_JL19 = true;
 
