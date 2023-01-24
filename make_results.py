@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-date = "20230109/"
+date = "20230118/"
 
 path_outputs = "outputs_" + date   # script ouputs
 path_results = "results_" + date   # dir to save figures and tables
